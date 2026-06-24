@@ -3,7 +3,7 @@
 # sync.sh — copy the canonical AI Hub into the Story Engine deploy folder.
 #
 # Source of truth:  ai-hub/index.html  (this repo)
-# Deploy target:    <story-engine>/docs/public/hub/index.html  (served at /hub/)
+# Deploy target:    <story-engine>/docs/hub/index.html  (session-gated, served at /dashboard/hub/)
 #
 # The Story Engine site is baked into a Docker image (COPY docs/), so after
 # syncing you must commit the Story Engine repo AND rebuild its container for
@@ -23,7 +23,7 @@ SRC="$HERE/index.html"
 
 # Default: sibling "4P | LinkedIn Story-Led Engine" folder next to ai-hub.
 STORY_ENGINE="${STORY_ENGINE:-$HERE/../4P | LinkedIn Story-Led Engine}"
-DEST_DIR="$STORY_ENGINE/docs/public/hub"
+DEST_DIR="$STORY_ENGINE/docs/hub"
 DEST="$DEST_DIR/index.html"
 
 if [[ ! -f "$SRC" ]]; then
@@ -48,12 +48,12 @@ for arg in "$@"; do
 done
 
 if $DO_COMMIT; then
-  if git -C "$STORY_ENGINE" diff --quiet -- "docs/public/hub/index.html" \
-     && git -C "$STORY_ENGINE" diff --cached --quiet -- "docs/public/hub/index.html" \
-     && ! git -C "$STORY_ENGINE" ls-files --error-unmatch "docs/public/hub/index.html" >/dev/null 2>&1; then
+  if git -C "$STORY_ENGINE" diff --quiet -- "docs/hub/index.html" \
+     && git -C "$STORY_ENGINE" diff --cached --quiet -- "docs/hub/index.html" \
+     && ! git -C "$STORY_ENGINE" ls-files --error-unmatch "docs/hub/index.html" >/dev/null 2>&1; then
     : # new file, fall through to add/commit
   fi
-  git -C "$STORY_ENGINE" add "docs/public/hub/index.html"
+  git -C "$STORY_ENGINE" add "docs/hub/index.html"
   if git -C "$STORY_ENGINE" diff --cached --quiet; then
     echo "• no changes to commit"; exit 0
   fi
@@ -68,4 +68,4 @@ fi
 echo ""
 echo "Next: the live site is baked into a Docker image. To publish, on the VPS run:"
 echo "  cd <story-engine> && git pull && docker compose build engine && docker compose up -d"
-echo "Then it's live at  https://<your-autonomia-domain>/hub/"
+echo "Then it's live at  https://<your-autonomia-domain>/dashboard/hub/  (requires login)"

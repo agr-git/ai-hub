@@ -2,7 +2,7 @@
 
 A single-file command center for tracking every active project — what it is, where it lives locally, its GitHub repo, and its current status.
 
-**Live:** deployed as a subpage of the Story Engine site at `/hub/` (GitHub Pages / nginx serves the Story Engine `docs/` folder).
+**Live:** deployed as a session-gated subpage of the Story Engine site at `/dashboard/hub/` (the box's nginx serves it from the Story Engine `docs/` volume behind login). The site is baked into the engine Docker image, so publishing requires a container rebuild on the VPS — not just a `git pull`.
 
 ## What it is
 
@@ -34,7 +34,7 @@ Edit the array, save, refresh. To re-deploy, copy `index.html` into the Story En
 This repo is the **canonical source**. The live copy lives inside the Story Engine repo so it can reuse that domain:
 
 ```
-autonomia-linkedin-story-engine/docs/hub/index.html   ← deployed copy (served at /hub/)
+autonomia-linkedin-story-engine/docs/hub/index.html   ← deployed copy (gated, served at /dashboard/hub/)
 ai-hub/index.html                                      ← source of truth (this repo)
 ```
 
