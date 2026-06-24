@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutonomIA+ · AI Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Lora:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
+<style>
+  :root{
+    --orange:#d97757; --orange-dk:#C15F3C; --orange-lt:#e89575;
+    --bg:#141413; --bg2:#1a1916; --bg3:#211f1c;
+    --border:#2e2c28; --border2:#3a3733;
+    --text-1:#faf9f5; --text-2:#b0aea5; --text-3:#6e6c67;
+    --cream:#F4F3EE; --green:#788c5d; --blue:#6a9bcc; --tan:#a8956b;
+    --red:#c75050; --gold:#D4AF37;
+  }
+  [data-theme="light"]{
+    --bg:#faf9f5; --bg2:#f0efe9; --bg3:#e5e3dc;
+    --border:#d4d2cb; --border2:#c0bdb5;
+    --text-1:#1a1916; --text-2:#4a4843; --text-3:#7a7872;
+    --cream:#2a2825; --orange-lt:#b85a3a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text-2);font-family:'Lora',Georgia,serif;line-height:1.5}
+
+  /* ── Header ── */
+  .header{background:var(--bg2);border-bottom:1px solid var(--border);padding:20px 32px 0;position:sticky;top:0;z-index:100}
+  .header-top{display:flex;align-items:center;gap:16px}
+  .header h1{font-family:'Poppins',sans-serif;font-weight:800;font-size:22px;color:var(--text-1)}
+  .header h1 span{color:var(--orange)}
+  .header-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-3)}
+  .header-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .header-nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px 0 12px}
+  .header-nav a{font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--text-3);text-decoration:none;padding:6px 14px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+  .header-nav a:hover,.header-nav a.active{color:var(--orange);border-color:var(--orange);background:rgba(217,119,87,.08)}
+  .clawd{flex-shrink:0}
+  .clawd rect.eye{animation:blink 3.5s infinite}
+  @keyframes blink{0%,88%,100%{opacity:1}94%{opacity:0}}
+  .theme-toggle{background:var(--bg3);border:1px solid var(--border);border-radius:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;line-height:1;transition:all .2s;flex-shrink:0}
+  .theme-toggle:hover{border-color:var(--orange)}
+
+  /* ── Layout ── */
+  .container{max-width:1200px;margin:0 auto;padding:24px 32px}
+
+  /* ── Summary banner / stats ── */
+  .summary-banner{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:10px;padding:20px;margin-bottom:24px}
+  .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:16px}
+  .sg-val{font-family:'Poppins',sans-serif;font-size:1.7rem;font-weight:800}
+  .sg-val.green{color:var(--green)} .sg-val.gold{color:var(--gold)} .sg-val.orange{color:var(--orange)} .sg-val.cream{color:var(--cream)}
+  .sg-label{font-family:'Poppins',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);margin-top:2px}
+
+  /* ── Controls ── */
+  .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+  .filter{font-family:'Poppins',sans-serif;background:var(--bg2);border:1px solid var(--border);color:var(--text-3);padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;user-select:none}
+  .filter:hover{color:var(--text-1);border-color:var(--border2)}
+  .filter.active{background:var(--orange);border-color:var(--orange);color:#000}
+  #search{margin-left:auto;background:var(--bg2);border:1px solid var(--border);color:var(--text-1);font-family:'JetBrains Mono',monospace;padding:8px 14px;border-radius:8px;font-size:12px;min-width:220px;outline:none}
+  #search:focus{border-color:var(--orange)}
+
+  /* ── Section labels ── */
+  .section-label{font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:var(--text-1);text-transform:uppercase;letter-spacing:1px;margin:30px 0 14px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--border)}
+
+  /* ── Cards ── */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+  .card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;transition:border-color .2s;position:relative;overflow:hidden}
+  .card:hover{border-color:var(--border2)}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .card.s-active::before{background:var(--green)}
+  .card.s-progress::before{background:var(--gold)}
+  .card.s-paused::before{background:var(--tan)}
+  .card.s-archive::before{background:var(--border2)}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
+  .card h2{font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;color:var(--text-1)}
+  .status-tag{font-family:'Poppins',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:10px;white-space:nowrap}
+  .t-active{background:rgba(120,140,93,.2);color:var(--green)}
+  .t-progress{background:rgba(212,175,55,.15);color:var(--gold)}
+  .t-paused{background:rgba(168,149,107,.18);color:var(--tan)}
+  .t-archive{background:rgba(110,108,103,.18);color:var(--text-3)}
+  .desc{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:14px;flex:1}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-3);background:var(--bg3);border:1px solid var(--border);padding:2px 8px;border-radius:5px}
+  .card-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--border);padding-top:12px;font-size:11px}
+  .meta{font-family:'JetBrains Mono',monospace;color:var(--text-3)}
+  .links a{font-family:'Poppins',sans-serif;font-weight:600;color:var(--blue);text-decoration:none;font-size:12px}
+  .links a:hover{color:var(--orange);text-decoration:underline}
+  .empty{color:var(--text-3);text-align:center;padding:40px;display:none;font-family:'JetBrains Mono',monospace;font-size:12px}
+
+  /* ── Footer ── */
+  .footer{text-align:center;padding:24px;border-top:1px solid var(--border);margin-top:24px}
+  .footer p{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-3)}
+  @media(max-width:600px){#search{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <svg class="clawd" viewBox="0 0 100 72" width="36" shape-rendering="crispEdges">
+      <rect x="20" y="0" width="60" height="50" fill="#d97757"/>
+      <rect class="eye" x="28" y="8" width="18" height="18" fill="#141413"/>
+      <rect class="eye" x="54" y="8" width="18" height="18" fill="#141413"/>
+      <rect x="8" y="18" width="12" height="12" fill="#d97757"/>
+      <rect x="80" y="18" width="12" height="12" fill="#d97757"/>
+      <rect x="28" y="50" width="18" height="22" fill="#d97757"/>
+      <rect x="54" y="50" width="18" height="22" fill="#d97757"/>
+    </svg>
+    <div>
+      <h1>Autonom<span>IA+</span> AI Hub</h1>
+      <div class="header-sub">Project command center — every active build, where it lives, and its status</div>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" onclick="var d=document.documentElement,t=d.getAttribute('data-theme')==='dark'?'light':'dark';d.setAttribute('data-theme',t);localStorage.setItem('theme',t);this.textContent=t==='light'?'☾':'☀';" aria-label="Toggle theme"></button>
+    </div>
+  </div>
+  <div class="header-nav">
+    <a href="#" class="active">AI Hub</a>
+    <a href="../index.html">Story Engine</a>
+    <a href="../control-panel.html">Control Panel</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="summary-banner">
+    <div class="summary-grid">
+      <div><div class="sg-val green" id="c-active">0</div><div class="sg-label">Active</div></div>
+      <div><div class="sg-val gold" id="c-progress">0</div><div class="sg-label">In Progress</div></div>
+      <div><div class="sg-val orange" id="c-repos">0</div><div class="sg-label">Git Repos</div></div>
+      <div><div class="sg-val cream" id="c-total">0</div><div class="sg-label">Total Tracked</div></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <span class="filter active" data-f="all">All</span>
+    <span class="filter" data-f="active">Active</span>
+    <span class="filter" data-f="progress">In Progress</span>
+    <span class="filter" data-f="paused">Paused</span>
+    <span class="filter" data-f="archive">Archive</span>
+    <input id="search" placeholder="Search projects…" autocomplete="off">
+  </div>
+
+  <div id="board"></div>
+  <div class="empty" id="empty">No projects match.</div>
+</div>
+
+<div class="footer">
+  <p>AutonomIA+ AI Hub &middot; tracked from ~/Downloads/AI &middot; repos under github.com/agr-git &middot; Built with Claude Code</p>
+</div>
+
+<script>
+const GH = "https://github.com/agr-git/";
+const projects = [
+  {name:"4P · LinkedIn Story-Led Engine", status:"active", updated:"2026-06-22",
+   desc:"12-week LinkedIn editorial system for Alejo Gil. Tracks 4 Key Results weekly, feeds a BI dashboard + Substack journal. Two-agent design: Claude Code builds, a VPS gateway operates.",
+   tags:["LinkedIn","n8n","Python","Apify","strategy-v2"], folder:"4P | LinkedIn Story-Led Engine", repo:"autonomia-linkedin-story-engine"},
+  {name:"Agro Pipeline", status:"active", updated:"2026-06-23",
+   desc:"Agro + tech consulting pipeline for LATAM. Detects, scores, builds and submits to ToR/RFP/EOI opportunities. Scraping (Apify+n8n) → Supabase → Notion → submission, with Hermes/Telegram go-no-go.",
+   tags:["Consulting","n8n","Supabase","Notion","Hermes"], folder:"agro-pipeline", repo:null},
+  {name:"Bellavista Landing", status:"active", updated:"2026-06-23",
+   desc:"Storytelling landing for Bellavista Coffee (Manizales, 1,300 MASL). Drives 4 lead-gen funnels + dual-visibility journal. Google OAuth + Supabase members, deployed on AWS Lightsail.",
+   tags:["Next.js 14","TypeScript","Tailwind","Docker","Lightsail"], folder:"bv-landing", repo:"bellavista-landing"},
+  {name:"Soni (Tauri)", status:"active", updated:"2026-06-20",
+   desc:"Offline, privacy-first speech-to-text desktop app — a fork of Handy v0.7.10 being rebranded as Soni. Press a shortcut, speak, get transcribed text in any field via Whisper.",
+   tags:["Tauri","Rust","Whisper","Desktop","fork: Handy"], folder:"Soni-Tauri", repo:"soni"},
+  {name:"BID Lab Brief v3", status:"progress", updated:"2026-06-05",
+   desc:"Interactive HTML project brief / proposal for IDB Lab (BID Lab) — context, thesis, methodology, actors, benchmarking, timeline, consultant CV (ES/EN). Multi-page landing-style deck.",
+   tags:["HTML","Proposal","BID Lab","Pitch"], folder:"bid-lab-brief-v3", repo:null},
+  {name:"OJV Monitor", status:"progress", updated:"2026-06-04",
+   desc:"Playwright-based monitor/probe — headless Chrome scraping harness (probe.js / probe-chrome.js). Early-stage automation scaffold.",
+   tags:["Node.js","Playwright","Monitoring"], folder:"ojv-monitor", repo:null},
+  {name:"Nodo5 — Panel Interno", status:"progress", updated:"2026-05-31",
+   desc:"Internal operations panel for the Nodo5 team. Express + PostgreSQL backend with JWT/bcrypt auth. Management dashboard for internal workflows.",
+   tags:["Node.js","Express","PostgreSQL","JWT"], folder:"nodo5", repo:null},
+  {name:"Job Search Automation", status:"paused", updated:"2026-03-30",
+   desc:"AI pipeline that scrapes LinkedIn jobs (Mon+Thu), scores them 0–10 with Claude across 5 dimensions, dedupes vs Notion, and surfaces matches as Notion tasks. Built in 7 sessions for ~$6.80.",
+   tags:["n8n","Apify","Claude API","Notion","shipped"], folder:"Job Search Automation", repo:"job-search-automation"},
+  {name:"Life OS", status:"paused", updated:"2026-05-06",
+   desc:"Personal operating-system project. Houses proposal-builder tooling and personal-productivity scaffolding.",
+   tags:["Personal","Productivity"], folder:"Life OS", repo:null},
+  {name:"Houston — Friction Journal", status:"paused", updated:"2026-05-08",
+   desc:"Friction-journal template/research artifact (PDF). Capturing UX/operational friction observations.",
+   tags:["Research","Journal","PDF"], folder:"houston", repo:null},
+  {name:"DigiNotas — Bellavista", status:"paused", updated:"2025-11-30",
+   desc:"Digital field-notes prototype for Bellavista Coffee activities (2025 CSV + HTML iterations). Supabase-backed notes experiment.",
+   tags:["HTML","Supabase","Coffee"], folder:"diginotas-project", repo:null},
+  {name:"Mission Control Center", status:"archive", updated:"2026-01-14",
+   desc:"Claude orchestrator experiment — multi-agent setup/quickstart scaffolding for coordinating Claude runs.",
+   tags:["Orchestration","Claude","Experiment"], folder:"Mission Control Center", repo:null},
+  {name:"Drying Experiment", status:"archive", updated:"2025-09-13",
+   desc:"Coffee drying experiment + LATAM Coffee Funding Dashboard (HTML). Earlier Bellavista R&D artifact.",
+   tags:["Coffee","R&D","Dashboard"], folder:"Drying Experiment", repo:null},
+];
+
+const board = document.getElementById('board');
+const sections = [
+  {key:"active",   label:"Active — moving this week"},
+  {key:"progress", label:"In Progress — recent work"},
+  {key:"paused",   label:"Paused — shipped or on hold"},
+  {key:"archive",  label:"Archive — older / reference"},
+];
+
+function card(p){
+  const repoLink = p.repo ? `<a href="${GH}${p.repo}" target="_blank">↗ GitHub</a>` : "";
+  return `<div class="card s-${p.status}" data-status="${p.status}" data-text="${(p.name+' '+p.desc+' '+p.tags.join(' ')).toLowerCase()}">
+    <div class="card-head"><h2>${p.name}</h2><span class="status-tag t-${p.status}">${p.status}</span></div>
+    <div class="desc">${p.desc}</div>
+    <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <div class="card-foot"><span class="meta">⌚ ${p.updated}</span><span class="links">${repoLink}</span></div>
+  </div>`;
+}
+
+function render(){
+  board.innerHTML = sections.map(s=>{
+    const items = projects.filter(p=>p.status===s.key);
+    if(!items.length) return "";
+    return `<div class="section-label" data-sec="${s.key}">${s.label}</div><div class="grid">${items.map(card).join('')}</div>`;
+  }).join('');
+  document.getElementById('c-active').textContent   = projects.filter(p=>p.status==='active').length;
+  document.getElementById('c-progress').textContent = projects.filter(p=>p.status==='progress').length;
+  document.getElementById('c-repos').textContent    = projects.filter(p=>p.repo).length;
+  document.getElementById('c-total').textContent    = projects.length;
+}
+render();
+
+let curFilter="all", curSearch="";
+function applyFilters(){
+  const cards=[...document.querySelectorAll('.card')]; let shown=0;
+  cards.forEach(c=>{
+    const okF = curFilter==="all" || c.dataset.status===curFilter;
+    const okS = !curSearch || c.dataset.text.includes(curSearch);
+    const vis = okF&&okS; c.style.display=vis?"":"none"; if(vis)shown++;
+  });
+  document.querySelectorAll('.section-label').forEach(lbl=>{
+    const grid=lbl.nextElementSibling;
+    const any=[...grid.children].some(c=>c.style.display!=="none");
+    lbl.style.display=any?"":"none"; grid.style.display=any?"":"none";
+  });
+  document.getElementById('empty').style.display=shown?"none":"block";
+}
+document.querySelectorAll('.filter').forEach(f=>f.onclick=()=>{
+  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
+  f.classList.add('active'); curFilter=f.dataset.f; applyFilters();
+});
+document.getElementById('search').oninput=e=>{curSearch=e.target.value.toLowerCase().trim();applyFilters();};
+document.querySelector('.theme-toggle').textContent=(localStorage.getItem('theme')||'dark')==='light'?'☾':'☀';
+</script>
+</body>
+</html>
